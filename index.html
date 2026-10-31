@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嘉立创 Forface3D 三维轻量化引擎 Demo</title>
+  <meta name="description" content="纯 HTML/CSS/JS 实现的嘉立创 Forface3D 三维轻量化引擎开放平台接入示例：上传模型 → 在线轻量化 → 浏览器内 3D 预览">
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===================== 上传页（默认视图） ===================== -->
+  <main class="page" id="upload-view">
+    <header class="brand">
+      <img class="brand-logo" src="assets/logo-light.svg" alt="嘉立创 Forface3D Logo">
+      <div class="brand-spec">DOC.NO FL-3D-DEMO<br>REV 1.0.0 · SCALE 1:1</div>
+    </header>
+
+    <p class="error" id="error-msg" hidden></p>
+
+    <div class="hero">
+      <!-- 左侧：价值主张 + 三步引导 -->
+      <div class="intro">
+        <h1 class="intro-title">让团队看模型，<br><em>像看图片一样简单</em></h1>
+        <p class="intro-lead">
+          上传 CAD 或 mesh 模型文件，服务端自动轻量化建模，浏览器内直接交互预览——测量、剖切、结构树开箱即用。
+        </p>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">1</span>
+            <div><b>上传模型文件</b><span>拖拽或点击选择，单文件 100M 以内</span></div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div><b>服务端自动轻量化解析</b><span>轻量化转换，无需本地安装软件</span></div>
+          </div>
+          <div class="step">
+            <span class="step-num">3</span>
+            <div><b>在线交互预览</b><span>旋转 / 缩放 / 测量 / 爆炸 / 结构件拆分</span></div>
+          </div>
+        </div>
+        <!-- 支持格式胶囊（js/app.js 根据 CONFIG.ACCEPT_EXTS 渲染） -->
+        <div class="fmts" id="fmts"></div>
+      </div>
+
+      <!-- 右侧：拖拽上传区（上传过程中保持可见，仅追加一条进度条） -->
+      <section class="dropzone" id="dropzone">
+        <span class="dropzone-tag">UPLOAD-ZONE / A1</span>
+        <span class="corner-b"></span>
+        <svg class="dropzone-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V6m0 0l-4 4m4-4l4 4M4 20h16"></path>
+        </svg>
+        <p class="dropzone-title">拖拽模型文件到上传区</p>
+        <p class="dropzone-sub">或点击下方按钮选择本地文件</p>
+        <label class="file-btn" id="file-btn">
+          选择文件
+          <input type="file" id="file-input">
+        </label>
+        <div class="progress-line" id="progress-line" hidden>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span class="progress-text" id="progress-text">0%</span>
+        </div>
+        <p class="dropzone-limit">单文件 ≤ 100M</p>
+      </section>
+    </div>
+
+    <!-- 官方查看器入口 -->
+    <a class="promo" href="https://3d-viewer.jlc.com/?chn_id=G1" target="_blank" rel="noopener noreferrer">
+      <span class="corner-b"></span>
+      <img class="promo-logo" src="assets/jlc-3d-viewer.svg" alt="嘉立创 3D 查看器">
+      <span class="promo-cta">立即体验 →</span>
+    </a>
+
+    <footer class="footer">
+      <span>MIT License</span>
+      <span class="divider">·</span>
+      <span>JLC Lite 3D Engine Demo v1.0.0</span>
+    </footer>
+  </main>
+
+  <!-- ===================== 预览页（全屏沉浸式） ===================== -->
+  <div class="stage" id="preview-view" hidden>
+    <header class="brand brand-bar">
+      <!-- 仅 logo 可点击返回上传页 -->
+      <div class="brand-home" id="brand-home" title="返回上传页">
+        <img class="brand-logo" src="assets/logo-light.svg" alt="嘉立创 Forface3D Logo">
+      </div>
+    </header>
+
+    <div class="stage-body">
+      <!-- 左侧信息面板（宽 15%），与预览器并列 -->
+      <aside class="panel">
+        <h3 class="panel-handle">模型信息</h3>
+        <div class="panel-body" id="panel-body"></div>
+        <div class="panel-actions">
+          <button class="primary" id="restart-btn">重新上传文件</button>
+        </div>
+      </aside>
+
+      <!-- 右侧预览器（85%） -->
+      <div class="viewer">
+        <p class="error stage-error" id="stage-error-msg" hidden></p>
+        <strong class="stage-title" id="stage-title"></strong>
+        <div class="viewer-mount" id="viewer-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本按依赖顺序引入：配置 → API → 预览器 → 页面逻辑 -->
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/viewer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

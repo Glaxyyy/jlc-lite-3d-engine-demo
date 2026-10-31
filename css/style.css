@@ -1,0 +1,621 @@
+/* ============================================
+   嘉立创 Forface3D Demo 样式
+   工程蓝图风：浅色图纸底 + 细网格 + 品牌蓝 #1871ff
+   ============================================ */
+
+/* JS 的 hidden 属性必须赢过元素自身的 display 规则 */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- 全局：蓝图网格背景 ---------- */
+body {
+  /* 清除浏览器默认 8px 外边距：否则 100vh 内容会溢出视口，整页出现右侧滚动条 */
+  margin: 0;
+  min-height: 100vh;
+  background-color: #f4f7fa;
+  background-image:
+    linear-gradient(rgba(24, 113, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 113, 255, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-attachment: fixed;
+}
+
+/* ---------- 上传页布局 ---------- */
+.page {
+  font-family: system-ui, sans-serif;
+  color: #22303c;
+  max-width: 1200px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 顶部品牌栏：滚动时固定在视口顶部（全宽贴边，网格底透出） */
+.brand {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  /* 无背景：与蓝图网格背景融为一体 */
+  margin: 0 -16px;
+  padding: 18px 16px 10px;
+}
+
+/* 顶栏右侧工程图签（等宽字技术标注） */
+.brand-spec {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  text-align: right;
+  line-height: 1.6;
+  padding-top: 4px;
+}
+
+/* 预览态的品牌头部：白底，logo 起始于页面 1/4 处 */
+.brand-bar {
+  position: static;
+  flex-shrink: 0;
+  padding-left: 25%;
+  background: #fff;
+}
+
+.brand-logo {
+  height: 40px;
+  width: auto;
+}
+
+/* 仅 logo 可点击返回上传页 */
+.brand-home {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.error {
+  background: #fdecec;
+  color: #b3261e;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+/* ---------- 引导分栏：左价值主张 / 右上传区 ---------- */
+.hero {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* 上传区列宽 552px，容器 1200px */
+  grid-template-columns: 1fr 552px;
+  gap: 48px;
+  align-items: center;
+  padding: 18px 0 10px;
+}
+
+.intro-title {
+  font-size: clamp(28px, 3.2vw, 38px);
+  line-height: 1.22;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+.intro-title em {
+  font-style: normal;
+  color: #1871ff;
+}
+
+.intro-lead {
+  color: #5a6b7b;
+  font-size: 14.5px;
+  line-height: 1.75;
+  margin: 0 0 26px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 28px;
+  border-left: 2px solid #d5dfe9;
+  padding-left: 20px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.step-num {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border: 2px solid #1871ff;
+  color: #1871ff;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step b {
+  font-size: 14.5px;
+  display: block;
+}
+
+.step span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.fmts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fmts i {
+  font-style: normal;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #fff;
+  border: 1px solid #c9d6e2;
+  color: #5a6b7b;
+}
+
+/* ---------- 上传区 ---------- */
+.dropzone {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #c9d6e2;
+  padding: 24px;
+  text-align: center;
+  color: #5a6b7b;
+  box-shadow: 0 6px 28px rgba(23, 50, 80, 0.06);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.dropzone:hover {
+  border-color: #1871ff;
+  box-shadow: 0 8px 34px rgba(24, 113, 255, 0.12);
+}
+
+/* 四角工程角标：卡片伪元素画上两角，.corner-b 伪元素画下两角（上传区/promo 条共用） */
+/* .corner-b 本体脱离文档流：既避免占 flex 位，伪元素又以其为定位基准铺满卡片 */
+.corner-b {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dropzone::before,
+.dropzone::after,
+.promo::before,
+.promo::after,
+.corner-b::before,
+.corner-b::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid #1871ff;
+}
+
+.dropzone::before,
+.promo::before {
+  top: -2px;
+  left: -2px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.dropzone::after,
+.promo::after {
+  top: -2px;
+  right: -2px;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.corner-b::before {
+  bottom: -2px;
+  left: -2px;
+  border-right: 0;
+  border-top: 0;
+}
+
+.corner-b::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.dropzone-tag {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+}
+
+.dropzone-icon {
+  width: 58px;
+  height: 58px;
+  color: #1871ff;
+}
+
+/* 文件悬停时的高亮反馈 */
+.dropzone-active {
+  border-color: #1871ff;
+  background: #f3f8ff;
+}
+
+.dropzone-active .dropzone-title,
+.dropzone-active .dropzone-sub {
+  color: #1871ff;
+}
+
+.dropzone-title {
+  font-size: 19px;
+  font-weight: 600;
+  color: #22303c;
+  margin: 2px 0 0;
+}
+
+.dropzone-sub {
+  font-size: 13.5px;
+  margin: 0;
+}
+
+.dropzone-limit {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 上传进度条：上传过程中上传区保持可见，仅追加一条进度 */
+.progress-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 70%;
+  margin-top: 6px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: #e3eaf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: #1871ff;
+  border-radius: 999px;
+  transition: width 0.3s ease-out;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #5a6b7b;
+  min-width: 34px;
+  text-align: right;
+}
+
+.file-btn {
+  display: inline-block;
+  background: #1871ff;
+  color: #fff;
+  padding: 12px 38px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.file-btn:hover {
+  background: #0e5ce6;
+}
+
+.file-btn-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-btn-disabled:hover {
+  background: #1871ff;
+}
+
+/* 视觉隐藏但保留在无障碍树（display:none 会让读屏/自动化都拿不到该输入框） */
+.file-btn input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* ---------- 官方查看器入口 ---------- */
+.promo {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #c9d6e2;
+  padding: 16px 20px;
+  margin-top: 16px;
+  text-decoration: none;
+  color: #1e3a8a;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+/* 整条 promo 可点击：悬停时角标卡片同款高亮 */
+.promo:hover {
+  border-color: #1871ff;
+  box-shadow: 0 8px 34px rgba(24, 113, 255, 0.12);
+}
+
+.promo-logo {
+  height: 34px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.promo-cta {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1871ff;
+  white-space: nowrap;
+}
+
+.promo:hover .promo-cta {
+  text-decoration: underline;
+}
+
+.footer {
+  margin-top: 12px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: #8a99a8;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.divider {
+  margin: 0 8px;
+}
+
+/* ---------- 预览页：全屏沉浸式 ---------- */
+.stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #d9dfe6;
+  font-family: system-ui, sans-serif;
+  color: #22303c;
+}
+
+/* 头部下方的内容行：信息面板（左）+ 预览器（右）并列 */
+.stage-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 15% 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 5px;
+  padding: 12px;
+}
+
+.viewer {
+  /* 右列：占 85% 宽度 */
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 预览器 iframe 挂载点铺满容器 */
+.viewer-mount {
+  position: absolute;
+  inset: 0;
+}
+
+.viewer-mount iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* 模型名：居中于预览器内部、距顶 10px；pointer-events:none 不拦截预览器交互 */
+.stage-title {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3a47;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.stage-error {
+  position: absolute;
+  top: 12px;
+  left: 55%;
+  transform: translateX(-50%);
+  z-index: 10;
+  max-width: 70%;
+  box-shadow: 0 4px 16px rgba(179, 38, 30, 0.15);
+}
+
+/* ---------- 左侧信息面板 ---------- */
+.panel {
+  /* 左列：固定 15% 宽度（预览器 85%），圆角与预览器一致 */
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-handle {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.panel-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-loading {
+  color: #5a6b7b;
+  font-size: 13px;
+}
+
+.panel dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px 10px;
+  margin: 4px 0 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.panel dt {
+  color: #5a6b7b;
+}
+
+.panel dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.panel-body dl {
+  flex: 0 0 auto;
+}
+
+.panel-actions {
+  margin: 0 14px 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.panel-actions button {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.primary {
+  border: 1px solid #2563eb;
+  color: #fff;
+  background: #2563eb;
+}
+
+.primary:hover {
+  background: #1d4ed8;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 960px) {
+  /* 窄屏：引导分栏折叠为单列 */
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    align-items: stretch;
+  }
+
+  .dropzone {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 720px) {
+  /* 小屏内容更高，允许自然滚动 */
+  .page {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .brand-spec {
+    display: none;
+  }
+
+  /* 小屏预览页改为上下堆叠：预览器在上，信息面板在下 */
+  .stage-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .panel {
+    grid-column: 1;
+    grid-row: 2;
+    height: 40vh;
+  }
+
+  .viewer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .stage-title {
+    font-size: 15px;
+  }
+}

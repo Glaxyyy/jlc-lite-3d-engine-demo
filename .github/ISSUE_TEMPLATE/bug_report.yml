@@ -1,0 +1,50 @@
+name: 🐛 Bug 反馈
+description: 报告 Demo 运行异常或与文档不符的行为
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈！请先搜索已有 Issue，避免重复提交。
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 简明描述发生了什么、期望行为是什么
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 在 js/config.js 填入凭据
+        2. python -m http.server 8080 启动
+        3. 访问 ... → 拖入 ... → 出现 ...
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: 问题环节
+      options:
+        - 获取 token（getAccessToken）
+        - 上传（uploadFile）
+        - 预览（iframe 加载 / postMessage）
+        - 模型信息面板（queryById）
+        - 页面样式 / 交互
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境信息
+      description: 操作系统、浏览器及版本
+      placeholder: Windows 11 / Chrome 13x
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 浏览器控制台报错（F12 → Console / Network）或截图

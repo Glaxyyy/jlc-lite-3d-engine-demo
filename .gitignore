@@ -1,0 +1,18 @@
+# 依赖与构建产物（本项目刻意零依赖，此条目仅为防御性兜底）
+node_modules/
+dist/
+
+# 环境变量与凭据（严禁提交真实凭据）
+.env
+.env.*
+*.local
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# 本地真实凭据（从 config.example.js 复制而来，绝不入库）
+js/config.js

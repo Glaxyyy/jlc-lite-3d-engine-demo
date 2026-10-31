@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax:
+    # JS 语法兜底：改配置/改代码引入语法错误时在提交阶段就拦住
+    # （config.js 是普通 <script> 引入，浏览器报错前无任何提示）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: JS 语法检查
+        run: |
+          for f in js/*.js server.js; do
+            node --check "$f"
+          done
+          echo "✅ 全部 JS 文件语法通过"
+
+  gitleaks:
+    # 凭据泄漏扫描：本项目 config.js 设计上就要填凭据，属于凭据高危仓库，
+    # 任何人误提交真实 app_secret 时在此阻断（开源项目的安全门禁）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
