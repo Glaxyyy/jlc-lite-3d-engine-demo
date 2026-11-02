@@ -56,24 +56,22 @@ body {
   gap: 14px;
 }
 
-/* GitHub 仓库入口头像（默认 identicon） */
+/* GitHub 仓库入口（Octocat 标） */
 .gh-avatar {
   display: block;
   flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 0 0 1px #c9d6e2;
-  transition: box-shadow 0.15s, transform 0.15s;
+  padding-top: 5px;
+  transition: opacity 0.15s, transform 0.15s;
 }
 
 .gh-avatar img {
   display: block;
-  width: 44px;
-  height: 44px;
+  width: 28px;
+  height: 28px;
 }
 
 .gh-avatar:hover {
-  box-shadow: 0 0 0 2px #1871ff;
+  opacity: 0.75;
   transform: translateY(-1px);
 }
 
