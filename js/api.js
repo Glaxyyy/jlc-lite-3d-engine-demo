@@ -14,27 +14,6 @@
 /** token 内存缓存：全局一份，2 小时有效，过期前 5 分钟提前刷新 */
 let tokenCache = { value: null, expireAt: 0 }
 
-/**
- * API 基地址自动探测（结果缓存）：
- *   - 用 node server.js 启动时，页面同源下有 /api 前缀代理 → 走代理（平台 API 未对浏览器开放 CORS，直连必被拦）
- *   - 用其他静态服务器（如 python http.server）时探测不到代理 → 回退直连平台（可能被 CORS 拦截）
- */
-let apiBaseCache = null
-async function resolveApiBase() {
-  if (apiBaseCache) return apiBaseCache
-  try {
-    const response = await fetch('/api/health')
-    if (response.ok) {
-      apiBaseCache = '/api'
-      return apiBaseCache
-    }
-  } catch {
-    /* 没有本地代理，走下面的直连 */
-  }
-  apiBaseCache = CONFIG.API_BASE
-  return apiBaseCache
-}
-
 /** 把接口返回包装成带错误码的 Error，页面直接展示 msg 即可 */
 function throwApiError(code, msg) {
   throw new Error(`平台错误 ${code}：${msg}`)
@@ -55,14 +34,13 @@ async function getAccessToken() {
     app_secret: CONFIG.APP_SECRET,
   })
   let res
-  const apiBase = await resolveApiBase()
   try {
-    const response = await fetch(`${apiBase}/forface/external/oauth/getAccessToken?${query}`)
+    const response = await fetch(`${CONFIG.API_BASE}/forface/external/oauth/getAccessToken?${query}`)
     res = await response.json()
   } catch (error) {
     throw new Error(
-      '无法获取 token。常见原因：① 没有启动本地代理 —— 请用 node server.js 启动（平台 API 未对浏览器开放 CORS，'
-      + '其他静态服务器的直连方式会被浏览器拦截）；② 网络不通。'
+      '无法获取 token。常见原因：① 凭据未填写或格式不对（检查 js/config.js 的 APP_ID / APP_SECRET）；② 网络不通。'
+      + '（双击 index.html 的 file:// 打开方式平台是放行的；若用其他静态服务器打开则会被 CORS 拦截。）'
     )
   }
   if (!isOk(res)) throwApiError(res.code, res.msg)
@@ -75,15 +53,14 @@ async function getAccessToken() {
 }
 
 /** ② 上传模型文件。onProgress(0~100) 回调上传进度；成功返回 { id, tokenKey } */
-async function uploadModel(file, accessToken, onProgress) {
-  const apiBase = await resolveApiBase()
+function uploadModel(file, accessToken, onProgress) {
   return new Promise((resolve, reject) => {
     const form = new FormData()
     form.append('file', file)
 
     // 用 XHR 而不是 fetch：只有 XHR 能监听上传进度
     const xhr = new XMLHttpRequest()
-    xhr.open('POST', `${apiBase}/forface/external/viewer/uploadFile`)
+    xhr.open('POST', `${CONFIG.API_BASE}/forface/external/viewer/uploadFile`)
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
     // 发送完成只计入 90%：收到服务端响应（受理完成）才允许到 100%
@@ -109,7 +86,7 @@ async function uploadModel(file, accessToken, onProgress) {
     }
     xhr.onerror = () => {
       reject(new Error(
-        '上传请求失败。常见原因：没有启动本地代理（node server.js）或网络不通 —— 平台 API 未对浏览器开放 CORS，直连会被拦截。'
+        '上传请求失败。常见原因：网络不通，或打开方式触发了 CORS 拦截 —— 请直接双击 index.html（file:// 打开平台是放行的）。'
       ))
     }
     xhr.send(form)
@@ -118,9 +95,8 @@ async function uploadModel(file, accessToken, onProgress) {
 
 /** ③ 查询任务结果（解析进度 + 几何属性）。返回 data 字段，失败返回 null（轮询场景不抛错，下一轮再试） */
 async function queryById(id, accessToken) {
-  const apiBase = await resolveApiBase()
   try {
-    const response = await fetch(`${apiBase}/forface/external/viewer/queryById`, {
+    const response = await fetch(`${CONFIG.API_BASE}/forface/external/viewer/queryById`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,

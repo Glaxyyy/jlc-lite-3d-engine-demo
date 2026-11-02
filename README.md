@@ -1,21 +1,18 @@
 # 嘉立创三维轻量化引擎示例 Demo
 
-[![CI](https://github.com/Glaxyyy/jlc-lite-3d-engine-demo/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 纯 **HTML + CSS + JavaScript** 实现的[嘉立创 Forface3D 开放平台的三维轻量化引擎](https://3dlite.forface3d.com/docs)接入示例 —— 零框架、零构建、零依赖，克隆下来改一个配置文件就能跑通「上传模型 → 在线轻量化 → 浏览器内 3D 预览」全链路。
 
-适合第一次接入开放平台、想用最短路径理解接入流程的开发者。框架封装（Vue / React / SDK）请移步主仓库 [jlc-lite-3d-engine](https://github.com/Glaxyyy/jlc-lite-3d-engine)。
+适合第一次接入开放平台、想用最短路径理解接入流程的开发者。
 
 ![演示动图](.github/assets/demo.gif)
 
 ## 功能
 
 - 📤 **拖拽 / 点击上传**模型文件（18 种格式，单文件 ≤ 100M），带平滑上传进度条
-- ⚡ **上传即预览**：`tokenKey` 上传响应直接返回，无需等待服务端解析
 - 🧊 **在线 3D 预览**：iframe 嵌入官方预览器（viewerkit），旋转 / 缩放 / 测量 / 爆炸开箱即用
 - 📊 **模型信息面板**：后台轮询解析结果，展示体积、表面积、最小包围盒等几何属性
-- 🛡️ **协议安全细节**：postMessage `event.source` 校验、就绪信号 2s 兜底重发、`deviceConfig` 显式下发
 
 ## 快速开始
 
@@ -38,19 +35,7 @@ APP_SECRET: '在此填入你的AppSecret',
 
 ### 3. 启动
 
-**方式一：双击 index.html（最快）**
-
-直接把 index.html 拖进浏览器（或双击）即可上传、预览。原理：`file://` 页面发出的请求 Origin 为 `null`，平台放行了该来源。但这属于平台当前策略，后续若收紧则此方式失效——届时改用方式二。
-
-**方式二：`node server.js`（推荐，行为与生产一致）**
-
-```bash
-node server.js
-```
-
-浏览器打开 <http://localhost:8080>，拖入一个 STEP / STL / OBJ 等模型文件即可预览。
-
-> **为什么方式二多了一步？** 平台 API 未对 `http://localhost` 等常规网页来源开放跨域，浏览器直连会被拦截。[server.js](server.js) 用 Node **内置模块**（零依赖、无 npm install）做了两件事：静态文件服务 + 把 `/api/*` 转发给平台 API。这也更接近生产形态——生产环境请把 `js/api.js` 里的三个接口搬进你自己的后端，而不是依赖上述任何一种本地特例。
+双击 index.html（或拖进浏览器）即可上传、预览。原理：`file://` 页面发出的请求 Origin 为 `null`，平台放行了该来源。但这属于平台当前策略，后续若收紧则此方式失效——届时请把 `js/api.js` 里的接口搬进自己的后端。
 
 ## 它是怎么工作的？
 
@@ -62,7 +47,7 @@ node server.js
 
 1. **tokenKey 上传即得，预览不用等解析** —— 轻量化的等待由预览器内部消化，前端零轮询门槛
 2. **`app_secret` 永远只该存在于后端**；`tokenKey` 不是密钥，它就是设计给 iframe 用的（2 小时有效）
-3. **预览器 iframe 由浏览器直连平台**，不经过代理/后端，这是官方设计
+3. **预览器 iframe 由浏览器直连平台**，不经过你的后端，这是官方设计
 
 
 ## 目录结构
@@ -70,7 +55,6 @@ node server.js
 ```
 jlc-lite-3d-engine-demo/
 ├── index.html          # 页面结构（上传页 + 预览页两个视图）
-├── server.js           # ⚙️ 零依赖本地服务器（静态文件 + /api 代理转发，Node 内置模块）
 ├── css/
 │   └── style.css       # 工程蓝图风样式
 ├── js/
@@ -79,17 +63,16 @@ jlc-lite-3d-engine-demo/
 │   ├── viewer.js       # 官方预览器 iframe + postMessage 协议封装
 │   └── app.js          # 页面状态机与交互（上传 / 进度 / 预览 / 信息面板）
 ├── assets/             # 品牌图标
-└── .github/            # CI 工作流 + Issue/PR 模板 + README 配图（architecture.svg）
+└── .github/            # Issue/PR 模板 + README 配图（architecture.svg）
 ```
 
-代码按「配置 → 接口 → 协议 → 交互」四层拆分，每个文件都有逐段中文注释，建议按 `config.example.js → api.js → viewer.js → app.js` 的顺序阅读，总计约 700 行。
 
 ## 常见问题
 
 <details>
 <summary><b>请求平台接口报错 / 控制台出现 CORS 跨域报错</b></summary>
 
-平台开放 API 的跨域策略：放行 `Origin: null`（双击以 `file://` 打开），**不放行** `http://localhost` 等常规网页来源。因此双击 index.html 可以跑通；请改用 `node server.js`（内置 `/api` 代理转发）。生产环境请把 `js/api.js` 里的三个接口搬到自己的后端（语言不限，就是普通的 HTTP 调用），前端只调你自己的接口。
+平台开放 API 的跨域策略：放行 `Origin: null`（双击以 `file://` 打开），**不放行** `http://localhost` 等常规网页来源。因此**请直接双击 index.html 打开**；若挂在静态服务器（如 `python -m http.server`）上打开，接口请求会被浏览器拦截。生产环境请把 `js/api.js` 里的三个接口搬到自己的后端（语言不限，就是普通的 HTTP 调用），前端只调你自己的接口。
 </details>
 
 <details>
@@ -119,7 +102,7 @@ iframe 宽度小于 768px 时预览器会自动切换移动端 UI。窄容器（
 
 ## 安全说明
 
-`app_secret` 只在本地 `js/config.js`（被 git 忽略）中出现，**仅因教学需要**、不进仓库；请勿把真实凭据提交到任何公开仓库。漏洞报告流程见 [SECURITY.md](SECURITY.md)。
+`app_secret` 只在本地 `js/config.js`（被 git 忽略）中出现，**仅因教学需要**、不进仓库；请勿把真实凭据提交到任何公开仓库。
 
 ## 📚 官方文档
 

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" font-family="system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="440" viewBox="0 0 720 440" font-family="system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif">
   <defs>
     <!-- 蓝图网格底 -->
     <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
@@ -14,12 +14,12 @@
     </marker>
   </defs>
 
-  <rect width="960" height="440" fill="#f4f7fa"/>
-  <rect width="960" height="440" fill="url(#grid)"/>
+  <rect width="720" height="440" fill="#f4f7fa"/>
+  <rect width="720" height="440" fill="url(#grid)"/>
 
   <g transform="translate(0,-95)">
 
-  <!-- ========== 三个主框 ========== -->
+  <!-- ========== 两个主框 ========== -->
   <!-- 浏览器 -->
   <g>
     <rect x="40" y="170" width="190" height="140" rx="10" fill="#fff" stroke="#c9d6e2" stroke-width="1.5"/>
@@ -30,63 +30,50 @@
     <text x="135" y="276" text-anchor="middle" font-size="11" fill="#94a3b8">上传页 ⇄ 预览页</text>
   </g>
 
-  <!-- server.js 本地代理 -->
-  <g>
-    <rect x="380" y="170" width="190" height="140" rx="10" fill="#fff" stroke="#c9d6e2" stroke-width="1.5"/>
-    <rect x="380" y="170" width="190" height="6" rx="3" fill="#1871ff"/>
-    <text x="475" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#22303c">server.js · 本地代理</text>
-    <text x="475" y="234" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#1871ff">node server.js</text>
-    <text x="475" y="256" text-anchor="middle" font-size="12" fill="#5a6b7b">静态文件 + /api 转发</text>
-    <text x="475" y="276" text-anchor="middle" font-size="11" fill="#94a3b8">零依赖（Node 内置模块）</text>
-  </g>
-
   <!-- 平台 API -->
   <g>
-    <rect x="730" y="170" width="190" height="140" rx="10" fill="#fff" stroke="#c9d6e2" stroke-width="1.5"/>
-    <rect x="730" y="170" width="190" height="6" rx="3" fill="#1871ff"/>
-    <text x="825" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#22303c">平台 API</text>
-    <text x="825" y="234" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#1871ff">api.forface3d.com</text>
-    <text x="825" y="256" text-anchor="middle" font-size="12" fill="#5a6b7b">仅面向服务端调用</text>
-    <text x="825" y="276" text-anchor="middle" font-size="11" fill="#94a3b8">（未开放浏览器 CORS）</text>
+    <rect x="490" y="170" width="190" height="140" rx="10" fill="#fff" stroke="#c9d6e2" stroke-width="1.5"/>
+    <rect x="490" y="170" width="190" height="6" rx="3" fill="#1871ff"/>
+    <text x="585" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#22303c">平台 API</text>
+    <text x="585" y="234" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#1871ff">api.forface3d.com</text>
+    <text x="585" y="256" text-anchor="middle" font-size="12" fill="#5a6b7b">放行 file:// 打开方式</text>
+    <text x="585" y="276" text-anchor="middle" font-size="11" fill="#94a3b8">（本 Demo 的直连依据）</text>
   </g>
 
   <!-- 官方预览器 -->
   <g>
-    <rect x="730" y="360" width="190" height="70" rx="10" fill="#fff" stroke="#1871ff" stroke-width="1.5"/>
-    <text x="825" y="390" text-anchor="middle" font-size="15" font-weight="700" fill="#1871ff">官方预览器</text>
-    <text x="825" y="412" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#1871ff">viewerkit.forface3d.com</text>
+    <rect x="490" y="360" width="190" height="70" rx="10" fill="#fff" stroke="#1871ff" stroke-width="1.5"/>
+    <text x="585" y="390" text-anchor="middle" font-size="15" font-weight="700" fill="#1871ff">官方预览器</text>
+    <text x="585" y="412" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#1871ff">viewerkit.forface3d.com</text>
   </g>
 
-  <!-- ========== ①②③ 三条接口箭头 ========== -->
+  <!-- ========== ①②③ 三条接口箭头（浏览器直连平台 API） ========== -->
   <!-- ① 获取 token -->
-  <text x="305" y="192" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">① GET getAccessToken</text>
-  <line x1="234" y1="205" x2="376" y2="205" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="574" y1="205" x2="726" y2="205" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="652" y="224" text-anchor="middle" font-size="11" fill="#5a6b7b">access_token（缓存复用）</text>
+  <text x="360" y="181" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">① GET getAccessToken</text>
+  <line x1="234" y1="195" x2="486" y2="195" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="360" y="214" text-anchor="middle" font-size="11" fill="#5a6b7b">access_token（缓存复用）</text>
 
   <!-- ② 上传模型 -->
-  <text x="305" y="232" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">② POST uploadFile</text>
-  <line x1="234" y1="245" x2="376" y2="245" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="574" y1="245" x2="726" y2="245" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="652" y="264" text-anchor="middle" font-size="11" fill="#5a6b7b">id + tokenKey</text>
+  <text x="360" y="231" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">② POST uploadFile</text>
+  <line x1="234" y1="245" x2="486" y2="245" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="360" y="264" text-anchor="middle" font-size="11" fill="#5a6b7b">id + tokenKey</text>
 
   <!-- ③ 查询结果 -->
-  <text x="305" y="272" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">③ POST queryById</text>
-  <line x1="234" y1="285" x2="376" y2="285" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="574" y1="285" x2="726" y2="285" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="652" y="304" text-anchor="middle" font-size="11" fill="#5a6b7b">体积 / 表面积 / 包围盒</text>
+  <text x="360" y="281" text-anchor="middle" font-size="11" font-family="ui-monospace, Consolas, monospace" fill="#22303c">③ POST queryById</text>
+  <line x1="234" y1="295" x2="486" y2="295" stroke="#1871ff" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="360" y="314" text-anchor="middle" font-size="11" fill="#5a6b7b">体积 / 表面积 / 包围盒</text>
 
   <!-- ========== ④ iframe 直连（虚线） ========== -->
-  <path d="M135 310 V400 H722" fill="none" stroke="#5a6b7b" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrowDash)"/>
-  <text x="430" y="390" text-anchor="middle" font-size="12.5" font-weight="600" fill="#22303c">④ iframe + postMessage(tokenKey) —— 浏览器直连预览器，不经代理</text>
-  <text x="825" y="450" text-anchor="middle" font-size="11" fill="#94a3b8">官方设计：预览流量不经过你的后端</text>
+  <path d="M135 310 V395 H482" fill="none" stroke="#5a6b7b" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrowDash)"/>
+  <text x="305" y="385" text-anchor="middle" font-size="12.5" font-weight="600" fill="#22303c">④ iframe + postMessage(tokenKey) —— 浏览器直连预览器</text>
+  <text x="585" y="450" text-anchor="middle" font-size="11" fill="#94a3b8">官方设计：预览流量不经过你的后端</text>
 
   <!-- ========== 图例 ========== -->
   <g font-size="11" fill="#5a6b7b">
     <line x1="40" y1="452" x2="76" y2="452" stroke="#1871ff" stroke-width="2"/>
-    <text x="84" y="456">HTTP 请求（经本地代理转发）</text>
+    <text x="84" y="456">接口请求（浏览器直连平台）</text>
     <line x1="290" y1="452" x2="326" y2="452" stroke="#5a6b7b" stroke-width="2" stroke-dasharray="7 5"/>
-    <text x="334" y="456">iframe 直连（不经代理 / 后端）</text>
+    <text x="334" y="456">iframe 直连（不经后端）</text>
   </g>
   </g>
 </svg>
