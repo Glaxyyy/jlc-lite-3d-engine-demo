@@ -126,9 +126,9 @@ iframe 宽度小于 768px 时预览器会自动切换移动端 UI。窄容器（
 
 ## 💬 联系我们
 
-- **APP_ID / APP_SECRET 申请 / 使用咨询**：加入「嘉立创 Forface3D 技术交流群」（企业微信，Demo 首页顶部的「扫码加群获取」弹的也是这个码）
+- **APP_ID / APP_SECRET 申请 / 使用咨询**：加入「嘉立创 Forface3D 轻量化引擎交流群」（企业微信）
 
-  ![嘉立创 Forface3D 技术交流群二维码](assets/qr-group.png)
+  ![嘉立创 Forface3D 轻量化引擎交流群二维码](assets/qr-group.png)
 
 - **邮箱**：service@forface3d.com（二维码失效或不想加群时使用）
 - **Bug / 功能建议**：提 [GitHub Issue](https://github.com/Glaxyyy/jlc-lite-3d-engine-demo/issues)
