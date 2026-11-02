@@ -49,6 +49,34 @@ body {
   padding: 18px 16px 10px;
 }
 
+/* 顶栏右侧：GitHub 头像 + 工程图签 水平排列 */
+.brand-right {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+/* GitHub 仓库入口头像（默认 identicon） */
+.gh-avatar {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px #c9d6e2;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.gh-avatar img {
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
+.gh-avatar:hover {
+  box-shadow: 0 0 0 2px #1871ff;
+  transform: translateY(-1px);
+}
+
 /* 顶栏右侧工程图签（等宽字技术标注） */
 .brand-spec {
   font-family: ui-monospace, Consolas, monospace;
