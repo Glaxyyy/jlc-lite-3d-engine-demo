@@ -140,7 +140,7 @@ function enterPreview(id, tokenKey, filename) {
   els.stageTitle.textContent = filename
   els.panelBody.innerHTML = '<p class="panel-loading">模型信息解析中…</p>'
 
-  viewer = new ForfaceViewer(els.viewerContainer, { language: 'zh' })
+  viewer = new jlcLite3DViewer(els.viewerContainer, { language: 'zh' })
   viewer.onModelStatus((status) => {
     if (status === 'failure') {
       showError('模型加载失败（预览器回报 failure），可重新上传更换文件', true)

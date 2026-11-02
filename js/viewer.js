@@ -11,7 +11,7 @@
  *   - 接收消息必须校验 event.source === iframe.contentWindow，防止第三方页面伪造
  *   - 发送消息时 targetOrigin 必须是预览器的 https 源
  */
-class ForfaceViewer {
+class jlcLite3DViewer {
   /**
    * @param {HTMLElement} container iframe 挂载容器
    * @param {{language?: 'zh'|'en'}} options 语言等 UI 配置
