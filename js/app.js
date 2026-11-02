@@ -105,6 +105,7 @@ async function upload(file) {
   els.fileBtn.classList.add('file-btn-disabled')
   els.fileInput.disabled = true
   els.progressLine.hidden = false
+  lastRenderedPct = 0 // 单调渲染基线归零
   let progress = 0
 
   // 本地传输瞬间完成，进度会一闪而过：进度条平滑爬升，100% 只在服务端返回后出现
@@ -137,7 +138,13 @@ async function upload(file) {
   }
 }
 
+// 进度渲染基线：进度条只增不减（两个写入源——平滑爬升定时器与 XHR 回调——
+// 存在乱序可能，任何较低值一律不渲染，杜绝「到 100% 又回退」的观感）
+let lastRenderedPct = 0
+
 function setProgress(pct) {
+  if (pct < lastRenderedPct) return
+  lastRenderedPct = pct
   els.progressFill.style.width = pct + '%'
   // 99 之前显示整数，之后显示两位小数（避免长时间停在 99% 看似卡住）
   els.progressText.textContent = (pct >= 99 ? pct.toFixed(2) : Math.floor(pct)) + '%'
