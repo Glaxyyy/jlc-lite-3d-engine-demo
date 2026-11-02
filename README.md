@@ -110,7 +110,7 @@ iframe 宽度小于 768px 时预览器会自动切换移动端 UI。窄容器（
 
 ## 相关仓库
 
-- [jlc-lite-3d-engine](https://github.com/Glaxyyy/jlc-lite-3d-engine) —— 官方开源 SDK + Vue 示例 + 服务端代理（含 Webhook 验签、token 缓存等生产级能力）
+- [jlc-lite-3d-engine](https://github.com/Glaxyyy/jlc-lite-3d-engine) —— 基于官方文档封装的开源 SDK + Vue 示例 + 服务端代理（含 Webhook 验签、token 缓存等生产级能力）
 
 ## 💬 联系我们
 
