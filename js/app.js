@@ -241,15 +241,19 @@ els.dropzone.addEventListener('drop', (e) => {
 els.backHome.addEventListener('click', backToUpload)
 els.restartBtn.addEventListener('click', backToUpload)
 
-// 凭据输入：实时写入 CONFIG（优先级最高），凭据变了旧 token 作废
-els.credAppId.addEventListener('input', () => {
-  CONFIG.APP_ID = els.credAppId.value.trim()
-  resetTokenCache()
-})
-els.credSecret.addEventListener('input', () => {
-  CONFIG.APP_SECRET = els.credSecret.value.trim()
-  resetTokenCache()
-})
+// 凭据：输入框默认留空；生效值 = 输入框实时输入，留空则回落到配置文件
+// （config.local.js / config.js 已在 CONFIG 中，顺序由脚本加载序保证）
+const fileCreds = { appId: CONFIG.APP_ID, secret: CONFIG.APP_SECRET }
+
+/** 按优先级合成生效凭据写回 CONFIG：输入框实时输入 > 配置文件 */
+function applyCreds() {
+  CONFIG.APP_ID = els.credAppId.value.trim() || fileCreds.appId
+  CONFIG.APP_SECRET = els.credSecret.value.trim() || fileCreds.secret
+  resetTokenCache() // 凭据变了旧 token 作废
+}
+
+els.credAppId.addEventListener('input', applyCreds)
+els.credSecret.addEventListener('input', applyCreds)
 
 // 群二维码弹框：按钮 / 遮罩 / × / Esc 均可关闭
 els.qrOpenBtn.addEventListener('click', () => { els.qrModal.hidden = false })
@@ -277,6 +281,4 @@ els.fileInput.accept = CONFIG.ACCEPT_EXTS.map((ext) => '.' + ext).join(',')
 // 归一化：config 文件里保留的「在此填入…」占位文案视为未填写
 if (CONFIG.APP_ID === '在此填入你的AppID') CONFIG.APP_ID = ''
 if (CONFIG.APP_SECRET === '在此填入你的AppSecret') CONFIG.APP_SECRET = ''
-// 输入框回显配置文件中已有的凭据（有值时脱敏展示）
-if (CONFIG.APP_ID) els.credAppId.value = CONFIG.APP_ID
-if (CONFIG.APP_SECRET) els.credSecret.value = CONFIG.APP_SECRET
+// 输入框保持空白（首次加载不回显配置值）；上传时留空则按 config.local.js → config.js 读取

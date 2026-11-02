@@ -139,10 +139,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 9px;
-  /* 透明背景：透出蓝图网格底，仅保留边框 */
-  border: 1.5px solid rgba(24, 113, 255, 0.45);
-  border-radius: 6px;
-  padding: 12px 16px;
 }
 
 .cred-field {
