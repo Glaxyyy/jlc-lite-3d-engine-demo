@@ -231,3 +231,5 @@ els.restartBtn.addEventListener('click', backToUpload)
 
 // ---------- 启动 ----------
 renderFormats()
+// 文件选择器按支持清单过滤（平台按扩展名识别类型，多数格式无标准 MIME，用扩展名声明最准确）
+els.fileInput.accept = CONFIG.ACCEPT_EXTS.map((ext) => '.' + ext).join(',')
