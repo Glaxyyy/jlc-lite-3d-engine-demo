@@ -76,7 +76,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* 顶栏右侧工程图签（等宽字技术标注） */
+/* 顶栏右侧图签（等宽字）：官方文档入口 + 版本信息 */
 .brand-spec {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 11px;
@@ -85,6 +85,16 @@ body {
   text-align: right;
   line-height: 1.6;
   padding-top: 4px;
+}
+
+.brand-spec a {
+  color: #1871ff;
+  text-decoration: none;
+  letter-spacing: normal;
+}
+
+.brand-spec a:hover {
+  text-decoration: underline;
 }
 
 /* 预览态的品牌头部：白底，logo 起始于页面 1/4 处 */
