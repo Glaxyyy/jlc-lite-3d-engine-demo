@@ -30,7 +30,8 @@ class jlcLite3DViewer {
 
   /**
    * 发送 tokenKey 给预览器，模型开始加载。
-   * 返回 Promise，在收到 complete（后端解析结果返回）时兑现，附带模型信息 info。
+   * 返回 Promise，在收到 complete（后端解析结果返回）时兑现，附带模型信息 info；
+   * 预览器长时间未就绪（网络不通/被拦截）时 reject，页面给出明确提示。
    */
   load(tokenKey) {
     // 付费去版权的 copyright 凭证也发在与 tokenKey 平级的顶层（本 Demo 不涉及，仅注释说明）
@@ -44,9 +45,34 @@ class jlcLite3DViewer {
       },
     }
 
-    return new Promise((resolve) => {
-      // 就绪信号防拦截：2s 内没收到 loaded 就直接发送
-      const fallback = setTimeout(() => this.iframe.contentWindow.postMessage(data, CONFIG.VIEWER_URL), 2000)
+    return new Promise((resolve, reject) => {
+      const post = () => this.iframe.contentWindow.postMessage(data, CONFIG.VIEWER_URL)
+
+      // 就绪前循环重发（官方协议要求处理首次加载被拦截的情况）：
+      // iframe 未加载完成时 postMessage 会抛源不匹配错误，try/catch 吞掉等下一轮
+      let ready = false
+      const attempts = setInterval(() => {
+        if (this.destroyed || ready) {
+          clearInterval(attempts)
+          return
+        }
+        try {
+          post()
+        } catch {
+          /* iframe 尚未就绪，800ms 后重试 */
+        }
+      }, 800)
+
+      // 20 秒仍未就绪：判定为预览器加载失败（网络不通/被拦截），给出可操作的报错
+      const giveup = setTimeout(() => {
+        if (ready || this.destroyed) return
+        clearInterval(attempts)
+        window.removeEventListener('message', onMessage)
+        reject(new Error(
+          '预览器加载失败：20 秒内未收到 viewerkit.forface3d.com 的就绪信号。'
+          + '请检查网络能否访问该域名（公司内网/代理拦截常见）。'
+        ))
+      }, 20000)
 
       const onMessage = (event) => {
         if (this.destroyed) return
@@ -54,11 +80,14 @@ class jlcLite3DViewer {
         if (event.source !== this.iframe.contentWindow) return
 
         if (event.data?.message === 'loaded') {
-          // ② 就绪：立即发送凭证
-          clearTimeout(fallback)
-          this.iframe.contentWindow.postMessage(data, CONFIG.VIEWER_URL)
+          // ② 就绪：立即发送凭证并停止重发
+          ready = true
+          clearInterval(attempts)
+          clearTimeout(giveup)
+          post()
         } else if (event.data?.complete === true) {
           // ③ 后端解析结果返回，模型开始加载
+          window.removeEventListener('message', onMessage)
           resolve({ info: event.data.info || null })
         }
 

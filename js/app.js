@@ -162,6 +162,9 @@ function enterPreview(id, tokenKey, filename) {
   // 关键路径：tokenKey 来自上传响应，直接进预览器（不等 analysisStatus）
   viewer.load(tokenKey).then(({ info }) => {
     if (info) mergeInfo(info)
+  }).catch((error) => {
+    // 预览器 20s 未就绪（网络不通/被拦截）：给出可操作的提示
+    showError(error.message, true)
   })
 
   // 几何信息后台轮询补充，不阻塞预览展示
