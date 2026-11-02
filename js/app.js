@@ -263,6 +263,9 @@ document.addEventListener('keydown', (e) => {
 renderFormats()
 // 文件选择器按支持清单过滤（平台按扩展名识别类型，多数格式无标准 MIME，用扩展名声明最准确）
 els.fileInput.accept = CONFIG.ACCEPT_EXTS.map((ext) => '.' + ext).join(',')
+// 归一化：config 文件里保留的「在此填入…」占位文案视为未填写
+if (CONFIG.APP_ID === '在此填入你的AppID') CONFIG.APP_ID = ''
+if (CONFIG.APP_SECRET === '在此填入你的AppSecret') CONFIG.APP_SECRET = ''
 // 输入框回显配置文件中已有的凭据（有值时脱敏展示）
 if (CONFIG.APP_ID) els.credAppId.value = CONFIG.APP_ID
 if (CONFIG.APP_SECRET) els.credSecret.value = CONFIG.APP_SECRET

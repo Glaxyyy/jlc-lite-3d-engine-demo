@@ -27,7 +27,8 @@ body {
   color: #22303c;
   max-width: 1200px;
   width: 100%;
-  height: 100vh;
+  /* min-height 而非 height：凭据行加入后内容变高，矮视口下允许滚动，避免 promo 压住内容 */
+  min-height: 100vh;
   margin: 0 auto;
   padding: 0 16px 24px;
   display: flex;
@@ -112,59 +113,53 @@ body {
   border-radius: 8px;
 }
 
-/* ---------- 凭据输入条（AUTH） ---------- */
-.cred-bar {
+/* ---------- 凭据输入（上传区上方，两行堆叠） ---------- */
+.upload-col {
+  min-width: 0;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #fff;
-  border: 1px solid #c9d6e2;
-  border-radius: 8px;
-  padding: 10px 16px;
-  margin-top: 14px;
-  position: relative;
+  flex-direction: column;
 }
 
-.cred-tag {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 11px;
-  color: #94a3b8;
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
+.cred-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .cred-field {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
+  gap: 10px;
 }
 
 .cred-field span {
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 12px;
-  color: #5a6b7b;
+  font-size: 14px;
+  font-weight: 600;
+  color: #22303c;
   flex-shrink: 0;
 }
 
 .cred-field input {
-  width: 100%;
+  flex: 1;
   min-width: 0;
   box-sizing: border-box;
-  border: 1px solid #d5dfe9;
-  border-radius: 6px;
-  padding: 8px 12px;
+  border: 1px solid #c9d6e2;
+  border-radius: 4px;
+  background: #fff;
+  padding: 9px 12px;
   font-family: ui-monospace, Consolas, monospace;
   font-size: 13px;
   color: #22303c;
   letter-spacing: 0.05em;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .cred-field input:focus {
   border-color: #1871ff;
+  box-shadow: 0 0 0 2px rgba(24, 113, 255, 0.12);
 }
 
 .cred-field input::placeholder {
@@ -173,21 +168,18 @@ body {
 }
 
 .cred-qr-btn {
-  flex-shrink: 0;
-  border: 1px solid #1871ff;
-  background: #fff;
+  align-self: flex-end;
+  border: 0;
+  background: none;
   color: #1871ff;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  padding: 4px 0;
 }
 
 .cred-qr-btn:hover {
-  background: #1871ff;
-  color: #fff;
+  text-decoration: underline;
 }
 
 /* ---------- 群二维码弹框 ---------- */
@@ -253,10 +245,9 @@ body {
 }
 
 @media (max-width: 720px) {
-  /* 小屏凭据条换行堆叠 */
+  /* 小屏凭据输入行距收紧 */
   .cred-bar {
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
   }
 }
 

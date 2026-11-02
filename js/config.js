@@ -17,8 +17,8 @@ if (typeof CONFIG === 'undefined') {
   window.CONFIG = {
   // 开发者账户中心 https://account.forface3d.com 「我的应用」里获取
   // 推荐填在 config.local.js，本文件保持占位符
-  APP_ID: '',
-  APP_SECRET: '',
+  APP_ID: '在此填入你的AppID',
+  APP_SECRET: '在此填入你的AppSecret',
 
   // 平台开放 API 地址（一般不用改）
   API_BASE: 'https://api.forface3d.com',
