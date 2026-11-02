@@ -14,6 +14,11 @@
 /** token 内存缓存：全局一份，2 小时有效，过期前 5 分钟提前刷新 */
 let tokenCache = { value: null, expireAt: 0 }
 
+/** 清空 token 缓存（凭据变更时调用，防止旧 token 被复用） */
+function resetTokenCache() {
+  tokenCache = { value: null, expireAt: 0 }
+}
+
 /** 把接口返回包装成带错误码的 Error，页面直接展示 msg 即可 */
 function throwApiError(code, msg) {
   throw new Error(`平台错误 ${code}：${msg}`)
@@ -39,7 +44,7 @@ async function getAccessToken() {
     res = await response.json()
   } catch (error) {
     throw new Error(
-      '无法获取 token。常见原因：① 凭据未填写或格式不对（检查 js/config.js 的 APP_ID / APP_SECRET）；② 网络不通。'
+      '无法获取 token。常见原因：① 凭据未填写或格式不对（检查 js/config.local.js 的 APP_ID / APP_SECRET）；② 网络不通。'
       + '（双击 index.html 的 file:// 打开方式平台是放行的；若用其他静态服务器打开则会被 CORS 拦截。）'
     )
   }

@@ -14,5 +14,5 @@ Thumbs.db
 .vscode/
 *.log
 
-# 本地真实凭据（从 config.example.js 复制而来，绝不入库）
-js/config.js
+# 本地真实凭据（真实凭据，优先级高于 config.js，绝不入库）
+js/config.local.js

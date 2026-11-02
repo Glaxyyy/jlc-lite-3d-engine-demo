@@ -112,6 +112,154 @@ body {
   border-radius: 8px;
 }
 
+/* ---------- 凭据输入条（AUTH） ---------- */
+.cred-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #c9d6e2;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-top: 14px;
+  position: relative;
+}
+
+.cred-tag {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.cred-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cred-field span {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: #5a6b7b;
+  flex-shrink: 0;
+}
+
+.cred-field input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid #d5dfe9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  color: #22303c;
+  letter-spacing: 0.05em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.cred-field input:focus {
+  border-color: #1871ff;
+}
+
+.cred-field input::placeholder {
+  color: #b3c2cf;
+  letter-spacing: normal;
+}
+
+.cred-qr-btn {
+  flex-shrink: 0;
+  border: 1px solid #1871ff;
+  background: #fff;
+  color: #1871ff;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cred-qr-btn:hover {
+  background: #1871ff;
+  color: #fff;
+}
+
+/* ---------- 群二维码弹框 ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 50, 80, 0.45);
+}
+
+.modal-card {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 32px 24px;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(23, 50, 80, 0.25);
+}
+
+.modal-card h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: #22303c;
+}
+
+.modal-qr {
+  display: block;
+  width: 240px;
+  height: auto;
+  border: 1px solid #eef2f6;
+  border-radius: 8px;
+}
+
+.modal-tip {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-close:hover {
+  color: #22303c;
+}
+
+@media (max-width: 720px) {
+  /* 小屏凭据条换行堆叠 */
+  .cred-bar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
 /* ---------- 引导分栏：左价值主张 / 右上传区 ---------- */
 .hero {
   flex: 1;

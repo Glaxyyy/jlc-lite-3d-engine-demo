@@ -22,10 +22,16 @@
 
 ### 2. 填写配置
 
-复制 [js/config.example.js](js/config.example.js) 为同目录下的 `js/config.js`（该文件已被 git 忽略，真实凭据不会进仓库），再把两行占位换成你的凭据：
+凭据有三个入口，**优先级从高到低**：
+
+1. **页面顶部的输入框**（AppID / Secret，输入后脱敏展示，实时生效，刷新后需重填）
+2. `js/config.local.js` —— **本地覆盖配置**，git 已忽略、不会进仓库，**推荐方式**
+3. `js/config.js` —— 仓库内置的基础配置，只含占位符
+
+推荐做法：复制 config.js 为 config.local.js 再填入凭据：
 
 ```bash
-cp js/config.example.js js/config.js
+cp js/config.js js/config.local.js
 ```
 
 ```js
@@ -33,9 +39,12 @@ APP_ID: '在此填入你的AppID',
 APP_SECRET: '在此填入你的AppSecret',
 ```
 
+> 📌 `config.js` 与 `config.local.js` 同时存在时，**以 config.local.js 为准**。
+> 没有创建 config.local.js 时，浏览器控制台会出现一条它的 404 记录，属正常现象，不影响使用。
+
 ### 3. 启动
 
-双击 index.html（或拖进浏览器）即可上传、预览。原理：`file://` 页面发出的请求 Origin 为 `null`，平台放行了该来源。但这属于平台当前策略，后续若收紧则此方式失效——届时请把 `js/api.js` 里的接口搬进自己的后端。
+双击 index.html（或拖进浏览器）即可上传、预览。仓库自带两个示例模型（[assets/models/](assets/models/)）：`BHJA-F-D10-L8.step` 与 `MARK5.stl`，拖入即可体验。
 
 ## 它是怎么工作的？
 
@@ -58,12 +67,15 @@ jlc-lite-3d-engine-demo/
 ├── css/
 │   └── style.css       # 工程蓝图风样式
 ├── js/
-│   ├── config.example.js  # ⚙️ 配置模板（复制为 config.js 后填入 app_id / app_secret，config.js 已被 git 忽略）
-│   ├── api.js          # 平台 3 个接口封装（token / 上传 / 查询）
-│   ├── viewer.js       # 官方预览器 iframe + postMessage 协议封装
-│   └── app.js          # 页面状态机与交互（上传 / 进度 / 预览 / 信息面板）
-├── assets/             # 品牌图标
-└── .github/            # Issue/PR 模板 + README 配图（architecture.svg）
+│   ├── config.js          # ⚙️ 基础配置（入库，只含占位符）
+│   ├── config.local.js    # ⚙️ 本地覆盖配置（git 忽略，填真实凭据，优先于 config.js）
+│   ├── api.js             # 平台 3 个接口封装（token / 上传 / 查询）
+│   ├── viewer.js          # 官方预览器 iframe + postMessage 协议封装
+│   └── app.js             # 页面状态机与交互（凭据 / 上传 / 进度 / 预览 / 信息面板）
+├── assets/
+│   ├── models/            # 示例模型（BHJA-F-D10-L8.step / MARK5.stl）
+│   └── ...                # 品牌图标、群二维码
+└── .github/               # Issue/PR 模板 + README 配图（architecture.svg）
 ```
 
 
@@ -102,7 +114,7 @@ iframe 宽度小于 768px 时预览器会自动切换移动端 UI。窄容器（
 
 ## 安全说明
 
-`app_secret` 只在本地 `js/config.js`（被 git 忽略）中出现，**仅因教学需要**、不进仓库；请勿把真实凭据提交到任何公开仓库。
+`app_secret` 只在本地 `js/config.local.js`（被 git 忽略）中出现，仓库内置的 `js/config.js` 仅含占位符；请勿把真实凭据提交到任何公开仓库。
 
 ## 📚 官方文档
 
@@ -114,13 +126,13 @@ iframe 宽度小于 768px 时预览器会自动切换移动端 UI。窄容器（
 
 ## 💬 联系我们
 
-- **APP_ID / APP_SECRET 申请 / 使用咨询**：加入「嘉立创 Forface3D 技术交流群」（企业微信）
+- **APP_ID / APP_SECRET 申请 / 使用咨询**：加入「嘉立创 Forface3D 技术交流群」（企业微信，Demo 首页顶部的「扫码加群获取」弹的也是这个码）
 
-  ![嘉立创 Forface3D 技术交流群二维码](.github/assets/footer-qr-company.png)
+  ![嘉立创 Forface3D 技术交流群二维码](assets/qr-group.png)
 
 - **邮箱**：service@forface3d.com（二维码失效或不想加群时使用）
 - **Bug / 功能建议**：提 [GitHub Issue](https://github.com/Glaxyyy/jlc-lite-3d-engine-demo/issues)
-- **安全漏洞**：请勿公开提交，走 [Security Advisories](https://github.com/Glaxyyy/jlc-lite-3d-engine-demo/security/advisories)（见 [SECURITY.md](SECURITY.md)）
+- **安全漏洞**：请勿公开提交，走 [Security Advisories](https://github.com/Glaxyyy/jlc-lite-3d-engine-demo/security/advisories)
 
 > ⚠️ 请勿在群里或任何公开渠道张贴 `app_secret` / token。
 

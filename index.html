@@ -25,6 +25,20 @@
 
     <p class="error" id="error-msg" hidden></p>
 
+    <!-- 凭据输入条：实时输入优先级最高，其次 config.local.js，最后 config.js -->
+    <section class="cred-bar">
+      <span class="cred-tag">AUTH</span>
+      <label class="cred-field">
+        <span>AppID</span>
+        <input type="password" id="cred-appid" placeholder="请输入AppID" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="cred-field">
+        <span>Secret</span>
+        <input type="password" id="cred-secret" placeholder="请输入Secret" autocomplete="off" spellcheck="false">
+      </label>
+      <button class="cred-qr-btn" id="qr-open-btn" type="button">扫码加群获取</button>
+    </section>
+
     <div class="hero">
       <!-- 左侧：价值主张 + 三步引导 -->
       <div class="intro">
@@ -115,7 +129,19 @@
     </div>
   </div>
 
-  <!-- 脚本按依赖顺序引入：配置 → API → 预览器 → 页面逻辑 -->
+  <!-- 群二维码弹框（【扫码加群获取】触发） -->
+  <div class="modal" id="qr-modal" hidden>
+    <div class="modal-mask" id="qr-mask"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="qr-close-btn" type="button" title="关闭">×</button>
+      <h3>扫码加入技术交流群</h3>
+      <img class="modal-qr" src="assets/qr-group.png" alt="嘉立创 Forface3D 技术交流群二维码">
+      <p class="modal-tip">APP_ID / APP_SECRET 申请与使用咨询</p>
+    </div>
+  </div>
+
+  <!-- 脚本按依赖顺序引入：本地覆盖配置（config.local.js 存在时优先生效；不存在仅一条控制台 404，属正常）→ 基础配置 → API → 预览器 → 页面逻辑 -->
+  <script src="js/config.local.js"></script>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/viewer.js"></script>

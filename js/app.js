@@ -27,6 +27,12 @@ const els = {
   stageTitle: document.getElementById('stage-title'),
   backHome: document.getElementById('brand-home'),
   restartBtn: document.getElementById('restart-btn'),
+  credAppId: document.getElementById('cred-appid'),
+  credSecret: document.getElementById('cred-secret'),
+  qrOpenBtn: document.getElementById('qr-open-btn'),
+  qrModal: document.getElementById('qr-modal'),
+  qrMask: document.getElementById('qr-mask'),
+  qrCloseBtn: document.getElementById('qr-close-btn'),
 }
 
 // ---------- 运行时状态 ----------
@@ -77,6 +83,12 @@ function showError(message, onStage) {
 
 async function upload(file) {
   if (phase !== 'idle') return // 上传中/预览中禁止重复上传
+
+  // 凭据前置校验（输入框实时输入 > config.local.js > config.js）
+  if (!CONFIG.APP_ID || !CONFIG.APP_SECRET) {
+    showError('请先填写 AppID 和 Secret（页面顶部输入框，或点击「扫码加群获取」申请）')
+    return
+  }
 
   // 前置校验：拖拽可绕过 accept 过滤，不支持的直接拦下
   if (file.size > CONFIG.MAX_FILE_SIZE) {
@@ -229,7 +241,28 @@ els.dropzone.addEventListener('drop', (e) => {
 els.backHome.addEventListener('click', backToUpload)
 els.restartBtn.addEventListener('click', backToUpload)
 
+// 凭据输入：实时写入 CONFIG（优先级最高），凭据变了旧 token 作废
+els.credAppId.addEventListener('input', () => {
+  CONFIG.APP_ID = els.credAppId.value.trim()
+  resetTokenCache()
+})
+els.credSecret.addEventListener('input', () => {
+  CONFIG.APP_SECRET = els.credSecret.value.trim()
+  resetTokenCache()
+})
+
+// 群二维码弹框：按钮 / 遮罩 / × / Esc 均可关闭
+els.qrOpenBtn.addEventListener('click', () => { els.qrModal.hidden = false })
+els.qrMask.addEventListener('click', () => { els.qrModal.hidden = true })
+els.qrCloseBtn.addEventListener('click', () => { els.qrModal.hidden = true })
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') els.qrModal.hidden = true
+})
+
 // ---------- 启动 ----------
 renderFormats()
 // 文件选择器按支持清单过滤（平台按扩展名识别类型，多数格式无标准 MIME，用扩展名声明最准确）
 els.fileInput.accept = CONFIG.ACCEPT_EXTS.map((ext) => '.' + ext).join(',')
+// 输入框回显配置文件中已有的凭据（有值时脱敏展示）
+if (CONFIG.APP_ID) els.credAppId.value = CONFIG.APP_ID
+if (CONFIG.APP_SECRET) els.credSecret.value = CONFIG.APP_SECRET
