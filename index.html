@@ -52,17 +52,19 @@
 
       <!-- 右列：凭据输入（实时输入优先级最高，其次 config.local.js，最后 config.js）+ 上传区 -->
       <div class="upload-col">
-        <section class="cred-bar">
-          <label class="cred-field">
-            <span>AppID:</span>
-            <input type="password" id="cred-appid" placeholder="请输入AppID" autocomplete="off" spellcheck="false">
-          </label>
-          <label class="cred-field">
-            <span>Secret:</span>
-            <input type="password" id="cred-secret" placeholder="请输入Secret" autocomplete="off" spellcheck="false">
-          </label>
-          <button class="cred-qr-btn" id="qr-open-btn" type="button">扫码加群获取</button>
-        </section>
+        <div class="cred-row">
+          <div class="cred-box">
+            <label class="cred-field">
+              <span>AppID:</span>
+              <input type="password" id="cred-appid" placeholder="请输入AppID" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="cred-field">
+              <span>key:</span>
+              <input type="password" id="cred-secret" placeholder="请输入Secret" autocomplete="off" spellcheck="false">
+            </label>
+          </div>
+          <button class="cred-qr-btn" id="qr-open-btn" type="button">去获取</button>
+        </div>
 
         <!-- 拖拽上传区（上传过程中保持可见，仅追加一条进度条） -->
         <section class="dropzone" id="dropzone">

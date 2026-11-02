@@ -113,18 +113,30 @@ body {
   border-radius: 8px;
 }
 
-/* ---------- 凭据输入（上传区上方，两行堆叠） ---------- */
+/* ---------- 凭据输入（上传区上方，带边框盒子 + 右侧「去获取」） ---------- */
 .upload-col {
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-.cred-bar {
+.cred-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.cred-box {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid rgba(24, 113, 255, 0.45);
+  border-radius: 6px;
+  padding: 10px 14px;
 }
 
 .cred-field {
@@ -145,10 +157,10 @@ body {
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
-  border: 1px solid #c9d6e2;
+  border: 1px solid #d5dfe9;
   border-radius: 4px;
   background: #fff;
-  padding: 9px 12px;
+  padding: 7px 10px;
   font-family: ui-monospace, Consolas, monospace;
   font-size: 13px;
   color: #22303c;
@@ -168,14 +180,15 @@ body {
 }
 
 .cred-qr-btn {
-  align-self: flex-end;
+  flex-shrink: 0;
+  align-self: stretch;
   border: 0;
   background: none;
   color: #1871ff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 4px 2px;
 }
 
 .cred-qr-btn:hover {
