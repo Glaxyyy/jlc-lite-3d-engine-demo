@@ -143,7 +143,11 @@ async function upload(file) {
 let lastRenderedPct = 0
 
 function setProgress(pct) {
-  if (pct < lastRenderedPct) return
+  if (pct < lastRenderedPct) {
+    // 被单调基线拦下的写入：正常情况不应出现，留痕便于诊断进度回退问题
+    console.warn(`[progress] 忽略回退写入 ${pct}%（已渲染 ${lastRenderedPct}%）`)
+    return
+  }
   lastRenderedPct = pct
   els.progressFill.style.width = pct + '%'
   // 99 之前显示整数，之后显示两位小数（避免长时间停在 99% 看似卡住）
