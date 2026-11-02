@@ -219,14 +219,33 @@ body {
 
 .cred-qr-btn {
   flex-shrink: 0;
-  align-self: stretch;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   border: 0;
   background: none;
   color: #1871ff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 2px;
+  padding: 0;
+}
+
+/* 二维码缩略示意图（点击弹大图） */
+.qr-thumb {
+  width: 56px;
+  height: 56px;
+  border: 1px solid #c9d6e2;
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cred-qr-btn:hover .qr-thumb {
+  border-color: #1871ff;
+  box-shadow: 0 0 0 2px rgba(24, 113, 255, 0.12);
 }
 
 .cred-qr-btn:hover {
