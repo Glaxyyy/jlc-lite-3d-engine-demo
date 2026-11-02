@@ -95,10 +95,12 @@ body {
   background: #fff;
 }
 
-/* 预览页的 stage 无水平内边距，抵消 brand 的 -16px 全宽负外边距，
-   使右上角 GitHub 标与图签的贴边位置和首页一致（16px 内边距） */
+/* 预览页的 stage 无水平内边距，抵消 brand 的 -16px 全宽负外边距；
+   右侧留白补齐首页 1200px 居中容器的差值（(100vw-1200px)/2，窄屏为 0），
+   使右上角 GitHub 标与图签的横向位置和首页完全一致 */
 .stage .brand {
   margin: 0;
+  padding-right: calc(max(0px, (100% - 1200px) / 2) + 16px);
 }
 
 .brand-logo {
