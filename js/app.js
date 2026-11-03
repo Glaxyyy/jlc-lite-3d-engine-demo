@@ -39,6 +39,7 @@ const els = {
 let phase = 'idle' // 'idle' | 'uploading' | 'previewing'
 let viewer = null // 当前预览实例（同时至多一个，重建前先 destroy）
 let infoTimer = null // 几何信息轮询句柄
+let modelData = {} // 当前模型信息聚合（预览器回报 + queryById 轮询两路合并）
 let accessToken = null // 与 tokenCache 对应的当前凭证（轮询复用）
 let dragDepth = 0 // dragenter/dragleave 成对触发，计数归零才算真正离开拖拽区
 
@@ -161,6 +162,7 @@ function enterPreview(id, tokenKey, filename) {
   els.uploadView.hidden = true
   els.previewView.hidden = false
   els.stageTitle.textContent = filename
+  modelData = { modelName: filename } // 本地文件名兜底，平台返回后覆盖
   els.panelBody.innerHTML = '<p class="panel-loading">模型信息解析中…</p>'
 
   viewer = new jlcLite3DViewer(els.viewerContainer, { language: 'zh' })
@@ -182,13 +184,19 @@ function enterPreview(id, tokenKey, filename) {
   startInfoPolling(id)
 }
 
-/** 后台每 3 秒查询一次任务结果，解析结束（analysisStatus !== 0）自动停止 */
+/** 后台每 3 秒查询一次任务结果：以 coverStatus（1 = 封面已生成）判断封面就绪；
+ *  封面生成略滞后于模型解析，解析完成后仍轮询直至 coverStatus 就绪，
+ *  最多再等 15 轮（45 秒）防止无限轮询 */
 function startInfoPolling(id) {
+  let polls = 0
   infoTimer = setInterval(async () => {
+    polls++
     const info = await queryById(id, accessToken)
     if (!info) return
     mergeInfo(info)
-    if (info.analysisStatus !== 0) stopInfoPolling()
+    const analysisDone = info.analysisStatus !== 0
+    const coverReady = info.coverStatus === 1
+    if (analysisDone && (coverReady || polls > 15)) stopInfoPolling()
   }, 3000)
 }
 
@@ -199,22 +207,65 @@ function stopInfoPolling() {
   }
 }
 
-/** 合并模型信息：预览器回报与平台查询互相补充，缺字段不覆盖 */
+/** 合并模型信息并重渲染面板；两路数据互补，仅填充缺失字段 */
 function mergeInfo(info) {
-  const rows = [
-    ['模型名称', info.modelName],
-    ['文件类型', info.fileType],
-    ['最小包围盒', info.minBox],
-    ['体积', info.volume],
-    ['表面积', info.area],
-    ['解析消息', info.message],
-  ].filter(([, value]) => value !== undefined && value !== null && value !== '')
+  for (const [key, value] of Object.entries(info)) {
+    if (value !== undefined && value !== null && value !== '') {
+      modelData[key] = value
+    }
+  }
+  renderInfoPanel()
+}
 
-  if (rows.length === 0) return
+/** 渲染信息面板：封面图置顶 + 名称/徽章 + 分隔线字段行 */
+function renderInfoPanel() {
+  const d = modelData
+  const rows = []
+  const add = (label, value, unit) => {
+    if (value !== undefined && value !== null && value !== '') {
+      rows.push([label, value, unit])
+    }
+  }
+  // 纯数字加千分位（体积/表面积等），非数字（包围盒等）原样
+  const fmtNum = (v) =>
+    /^\d+(\.\d+)?$/.test(v)
+      ? Number(v).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+      : v
+
+  add('最小包围盒', d.minBox, 'mm')
+  add('体积', d.volume !== undefined && d.volume !== null ? fmtNum(String(d.volume)) : undefined, 'mm³')
+  add('表面积', d.area !== undefined && d.area !== null ? fmtNum(String(d.area)) : undefined, 'mm²')
+  add(
+    '处理耗时',
+    d.processTime !== undefined && d.processTime !== null && d.processTime !== ''
+      ? `${Number(d.processTime).toLocaleString('en-US')} ms` // 整数毫秒，不带小数
+      : undefined,
+  )
+  add('解析消息', d.message)
+
+  // 封面图：cover 与 coverTempUrl 只返回其一，哪个有值用哪个（临时链接 2h 过期）
+  const cover = d.cover || d.coverTempUrl
+  const coverHtml = cover
+    ? `<img class="cover-img" src="${escapeHtml(String(cover))}" alt="模型封面" onerror="this.classList.add('cover-failed')">`
+    : '<div class="cover-empty">封面生成中…</div>'
+
+  // 名称 + 类型徽章（模型名称从字段行升级为标题，类型/装配体做成胶囊徽章）
+  const badges = []
+  if (d.fileType) badges.push(String(d.fileType).toUpperCase())
+  if (d.isAssemble === 1) badges.push('装配体')
+  const badgeHtml = badges.length
+    ? `<div class="field-badges">${badges.map((b) => `<i>${escapeHtml(b)}</i>`).join('')}</div>`
+    : ''
+
   els.panelBody.innerHTML =
-    '<dl>' +
-    rows.map(([label, value]) => `<dt>${label}</dt><dd>${escapeHtml(String(value))}</dd>`).join('') +
-    '</dl>'
+    coverHtml +
+    `<h4 class="model-name">${escapeHtml(String(d.modelName || ''))}</h4>` +
+    badgeHtml +
+    rows.map(([label, value, unit]) => {
+      const v = escapeHtml(String(value))
+      const u = unit ? `<em class="u">${unit}</em>` : ''
+      return `<div class="info-row"><span class="k">${label}</span><span class="v">${v} ${u}</span></div>`
+    }).join('')
 }
 
 /** 防止文件名等内容注入 HTML */
