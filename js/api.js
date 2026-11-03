@@ -57,25 +57,17 @@ async function getAccessToken() {
   return tokenCache.value
 }
 
-/** ② 上传模型文件。onProgress(0~100) 回调上传进度；成功返回 { id, tokenKey } */
-function uploadModel(file, accessToken, onProgress) {
+/** ② 上传模型文件。成功返回 { id, tokenKey }（进度条为页面侧假进度，不走真实上报） */
+function uploadModel(file, accessToken) {
   return new Promise((resolve, reject) => {
     const form = new FormData()
     form.append('file', file)
 
-    // 用 XHR 而不是 fetch：只有 XHR 能监听上传进度
     const xhr = new XMLHttpRequest()
     xhr.open('POST', `${CONFIG.API_BASE}/forface/external/viewer/uploadFile`)
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
-    // 发送完成只计入 90%：收到服务端响应（受理完成）才允许到 100%
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 90))
-      }
-    }
     xhr.onload = () => {
-      if (onProgress) onProgress(100)
       try {
         const res = JSON.parse(xhr.responseText)
         if (!isOk(res)) {

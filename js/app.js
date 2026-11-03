@@ -105,28 +105,31 @@ async function upload(file) {
   els.errorMsg.hidden = true
   els.fileBtn.classList.add('file-btn-disabled')
   els.fileInput.disabled = true
+  // 进度条归零必须在显示进度行【之前】：上一轮可能停在 100%，
+  // 若先显示再归零，会看到条从 100% 倒冲回低位的「回退」动画（二轮上传必现）
+  lastRenderedPct = 0
+  els.progressFill.style.transition = 'none' // 归零不做动画
+  els.progressFill.style.width = '0%'
+  void els.progressFill.offsetWidth // 强制重排，确保归零立即生效
+  els.progressFill.style.transition = '' // 恢复爬升动画
   els.progressLine.hidden = false
-  lastRenderedPct = 0 // 单调渲染基线归零
   let progress = 0
 
-  // 本地传输瞬间完成，进度会一闪而过：进度条平滑爬升，100% 只在服务端返回后出现
+  // 假进度曲线：四段减速——先快、再慢、更慢，97% 后按两位小数蠕动
+  // （逼近 99.4 但永远到不了 100）——100% 只在接口响应完成后出现
   const creep = setInterval(() => {
-    if (progress >= 99.9) return
-    if (progress < 90) progress += 4
-    else if (progress < 96) progress += 0.8
-    else if (progress < 98) progress += 0.3
-    else progress += Math.max(0.01, (99.9 - progress) / 20)
-    setProgress(Math.min(progress, 99.9))
+    if (progress >= 99.4) return
+    if (progress < 50) progress += 5 // 先快（~1 秒到 50%）
+    else if (progress < 80) progress += 1 // 再慢（~4 秒到 80%）
+    else if (progress < 90) progress += 0.167 // 更慢（80→90 用 6 秒）
+    else if (progress < 97) progress += 0.0583 // 90→97 用 12 秒
+    else progress += Math.max(0.01, (99.4 - progress) / 40) // 97 后两位小数蠕动
+    setProgress(Math.min(progress, 99.4))
   }, 100)
 
   try {
     accessToken = await getAccessToken()
-    const { id, tokenKey } = await uploadModel(file, accessToken, (pct) => {
-      if (pct > progress) {
-        progress = pct
-        setProgress(pct)
-      }
-    })
+    const { id, tokenKey } = await uploadModel(file, accessToken)
     clearInterval(creep)
     setProgress(100)
     // 完成态短暂停留，保证进度条肉眼可见
@@ -152,7 +155,7 @@ function setProgress(pct) {
   lastRenderedPct = pct
   els.progressFill.style.width = pct + '%'
   // 99 之前显示整数，之后显示两位小数（避免长时间停在 99% 看似卡住）
-  els.progressText.textContent = (pct >= 99 ? pct.toFixed(2) : Math.floor(pct)) + '%'
+  els.progressText.textContent = (pct >= 97 ? pct.toFixed(2) : Math.floor(pct)) + '%'
 }
 
 // ---------- 预览流程 ----------
@@ -165,6 +168,15 @@ function enterPreview(id, tokenKey, filename) {
   modelData = { modelName: filename } // 本地文件名兜底，平台返回后覆盖
   els.panelBody.innerHTML = '<p class="panel-loading">模型信息解析中…</p>'
 
+  mountViewer(tokenKey)
+
+  // 几何信息后台轮询补充，不阻塞预览展示
+  startInfoPolling(id)
+}
+
+/** 挂载预览器实例并发送凭证 */
+function mountViewer(tokenKey) {
+  els.stageErrorMsg.hidden = true // 清掉上一轮的失败提示
   viewer = new jlcLite3DViewer(els.viewerContainer, { language: 'zh' })
   viewer.onModelStatus((status) => {
     if (status === 'failure') {
@@ -179,9 +191,6 @@ function enterPreview(id, tokenKey, filename) {
     // 预览器 20s 未就绪（网络不通/被拦截）：给出可操作的提示
     showError(error.message, true)
   })
-
-  // 几何信息后台轮询补充，不阻塞预览展示
-  startInfoPolling(id)
 }
 
 /** 后台每 3 秒查询一次任务结果：以 coverStatus（1 = 封面已生成）判断封面就绪；
@@ -346,4 +355,7 @@ els.fileInput.accept = CONFIG.ACCEPT_EXTS.map((ext) => '.' + ext).join(',')
 // 归一化：config 文件里保留的「在此填入…」占位文案视为未填写
 if (CONFIG.APP_ID === '在此填入你的AppID') CONFIG.APP_ID = ''
 if (CONFIG.APP_SECRET === '在此填入你的AppSecret') CONFIG.APP_SECRET = ''
-// 输入框保持空白（首次加载不回显配置值）；上传时留空则按 config.local.js → config.js 读取
+// 输入框回显配置文件的生效凭据（密码型脱敏展示），避免「配置是否已读取」的误解；
+// 手动修改输入框仍会实时覆盖 CONFIG（留空则上传时回落到配置文件）
+els.credAppId.value = CONFIG.APP_ID || ''
+els.credSecret.value = CONFIG.APP_SECRET || ''
